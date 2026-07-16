@@ -1,0 +1,10 @@
+# netlify.toml (프로젝트 루트 폴더에 생성)
+[build]
+  command = "npm run build"
+  publish = "dist" # Vite를 사용할 경우 빌드 폴더는 dist입니다. (CRA는 build)
+
+# 프론트엔드에서 /.netlify/functions/ask-ai 대신 /api/ask-ai로 더 쉽게 호출할 수 있게 리다이렉트 설정
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
