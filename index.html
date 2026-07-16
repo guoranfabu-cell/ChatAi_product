@@ -2,14 +2,70 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>First AI product</title>
+    <title>First AI Product</title>
+    <style>
+      /* 간단한 채팅방 스타일 예시 (기존 스타일이 있다면 대체하셔도 좋습니다) */
+      body {
+        font-family: sans-serif;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      #chat-box {
+        border: 1px solid #ddd;
+        height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      #user-input {
+        width: 80%;
+        padding: 8px;
+      }
+      #send-btn {
+        width: 18%;
+        padding: 8px;
+      }
+    </style>
   </head>
   <body>
-    <!-- React 앱이 마운트될 핵심 태그 -->
-    <div id="root"></div>
-    <!-- main.jsx의 경로를 정확히 지정해줍니다 -->
-    <script type="module" src="/src/main.jsx"></script>
+    <h1>나의 AI 채팅 웹</h1>
+
+    <div id="chat-box">
+      <div id="messages">AI에게 질문을 던져보세요!</div>
+    </div>
+
+    <input type="text" id="user-input" placeholder="질문을 입력하세요..." />
+    <button id="send-btn">전송</button>
+
+    <!-- 🚨 아주 중요: React용 main.jsx 대신, 내가 만든 바닐라 JS(예: ask-ai.js)를 연결합니다! -->
+    <script src="/netlify/functions/ask-ai.js"></script>
+    <script>
+      // 화면 예시 스크립트 (HTML에서 버튼을 눌렀을 때 Netlify Function으로 API를 쏘는 연동 코드)
+      const sendBtn = document.getElementById("send-btn");
+      const userInput = document.getElementById("user-input");
+      const messages = document.getElementById("messages");
+
+      sendBtn.addEventListener("click", async () => {
+        const text = userInput.value;
+        if (!text) return;
+
+        messages.innerHTML += `<div><strong>나:</strong> ${text}</div>`;
+        userInput.value = "";
+
+        try {
+          // 내 Netlify 서버리스 함수에 질문 요청
+          const response = await fetch("/.netlify/functions/ask-ai", {
+            method: "POST",
+            body: JSON.stringify({ prompt: text }),
+          });
+          const data = await response.json();
+          messages.innerHTML += `<div><strong>AI:</strong> ${data.reply || data.error}</div>`;
+        } catch (err) {
+          messages.innerHTML += `<div><strong>에러:</strong> 전송에 실패했습니다.</div>`;
+        }
+      });
+    </script>
   </body>
 </html>
