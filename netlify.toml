@@ -1,11 +1,6 @@
-# netlify.toml
-
 [build]
-  # 빌드 명령어가 필요 없는 순수 HTML/JS 프로젝트이므로 비워둡니다.
-  command = ""
-  # 🚨 아주 중요: 루트 폴더(.)에 있는 index.html을 그대로 웹에 게시하도록 설정합니다.
-  publish = "."
+  command = "npm run build"
+  publish = "dist"
 
 [functions]
-  # Netlify 서버리스 함수들이 모여있는 폴더를 지정합니다.
   directory = "netlify/functions"
